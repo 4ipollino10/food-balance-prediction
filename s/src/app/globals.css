@@ -1,0 +1,35 @@
+:root{
+    --bg: rgb(255, 255, 255);
+    --text: rgb(89, 89, 133)
+}
+
+body{
+    background-color: var(--bg);
+    color: var(--text);
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+a{
+    text-decoration: none;
+    color: inherit;
+}
+
+.content-container {
+    margin: 130px;
+    margin-top: 0;
+    background-color: var(--bg);
+    height: auto;
+}
+
+@layer base {
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }

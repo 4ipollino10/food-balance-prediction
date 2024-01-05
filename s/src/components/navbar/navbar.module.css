@@ -1,0 +1,9 @@
+.navbar {
+    color: var(--text);
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 130px;
+    background-color: #83e298;
+}
