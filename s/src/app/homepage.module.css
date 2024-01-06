@@ -1,4 +1,39 @@
+.firstRow{
+
+
+
+}
+
+.button{
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.mainSelect{
+    margin-top: 5px;
+}
+
+.rowItem{
+    margin-top: 2px;
+    padding-right: 5px;
+}
+
+.mainText{
+    display: block;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.secondaryText{
+    font-size: 18px;
+    margin-right: 5px;
+}
+
 .form{
-    width: 100;
+    width: 90%;
+    max-width: 1000px;
     display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
 }

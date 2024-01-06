@@ -20,11 +20,28 @@ a{
 }
 
 .content-container {
-    margin: 130px;
+    /*margin-left: 130px;*/
     margin-top: 0;
     background-color: var(--bg);
-    height: auto;
+    /*height: auto;*/
+    padding-top: 10px;
+    padding-left: 135px;
+    width: 100%;
 }
+
+.react-datepicker__input-container input{
+    font-size: 18px;
+    max-width: 170px;
+}
+
+.react-datepicker__year--container{
+    font-size: 18px;
+    max-width: 170px;
+}
+
+/*.react-datepicker__year-wrapper{*/
+/*    max-width: 170px;*/
+/*}*/
 
 @layer base {
     input[type="number"]::-webkit-inner-spin-button,

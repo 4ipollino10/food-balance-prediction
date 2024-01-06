@@ -1,0 +1,16 @@
+.block{
+    align-items: center;
+    display: flex;
+    margin-top: 10px;
+}
+
+.input{
+    font-size: 18px;
+    margin-right: 5px;
+}
+
+.checkbox{
+    margin: auto;
+    width: 25px;
+    height: 25px;
+}

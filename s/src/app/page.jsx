@@ -2,6 +2,7 @@
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "./homepage.module.css"
+import "./globals.css"
 import axios from "axios";
 
 import React, { useState } from 'react';
@@ -276,19 +277,25 @@ const Home = () => {
 
   return (
     <div className="content-container">
-      Главная страница
-      <form>
-        <div>
-          <select value={selectedOption} onFocus={() => handleDropDownClick()} onChange={(e) => handleSelect(e.target.value)}>
-            <option value={undefined} disabled selected hidden>Выберите продукт</option>
+      <label className={styles.mainText}>Главная страница</label>
+      <form className={styles.firstRow}>
+        <div className={styles.mainSelect}>
+          <label className={styles.secondaryText}>Выберите продукт:</label>
+          <select
+              className={styles.secondaryText}
+              value={selectedOption}
+              onFocus={() => handleDropDownClick()}
+              onChange={(e) => handleSelect(e.target.value)}
+          >
+            <option value={undefined} disabled selected hidden>Не выбрано</option>
             {options.map((option) => (
               <option value={option.product_id} key={option.product_id}>{option.product_name}</option>
             ))}
           </select>
           {inputError.productError && <div style={{color: 'red'}}>{inputError.productError}</div>}
         </div>
-        <div>
-          <label>Выберите год:</label>
+        <div className={styles.mainSelect}>
+          <label className={styles.secondaryText}>Выберите год:</label>
           <DatePicker
             selected={selectedYear}
             onChange={handleYearChange}
@@ -299,91 +306,97 @@ const Home = () => {
         </div>
         <div className={styles.form}>
           <div>
-            <InputField
-              inputType="number"
-              inputPlaceholder="Численность населения"
-              inputValue={population}
-              handleInputChange={handlePopulationChange}
-              isCheckboxChecked={isPopulationCheckboxChecked}
-              handleCheckboxChange={handlePopulationCheckboxChange}
-              handleKeyDown={handleRationalKeyDown}
+            <div className={styles.rowItem}>
+              <InputField
+                inputType="number"
+                inputPlaceholder="Численность населения"
+                inputValue={population}
+                handleInputChange={handlePopulationChange}
+                isCheckboxChecked={isPopulationCheckboxChecked}
+                handleCheckboxChange={handlePopulationCheckboxChange}
+                handleKeyDown={handleRationalKeyDown}
+                ></InputField>
+            </div>
+            <div className={styles.rowItem}>
+              <InputField
+                inputType="number"
+                inputPlaceholder="Коэффициент изменения температуры поверхности"
+                inputValue={temperature}
+                handleInputChange={handleTemperatureChange}
+                isCheckboxChecked={isTemperatureCheckboxChecked}
+                handleCheckboxChange={handleTemperatureCheckboxChange}
+                handleKeyDown={handleKeyDown}
               ></InputField>
+            </div>
+            <div className={styles.rowItem}>
+              <InputField
+                inputType="number"
+                inputPlaceholder="ВВП"
+                inputValue={gdp}
+                handleInputChange={handleGdpChange}
+                isCheckboxChecked={isGdpCheckboxChecked}
+                handleCheckboxChange={handleGdpCheckboxChange}
+                handleKeyDown={handleKeyDown}
+                ></InputField>
+            </div>
           </div>
           <div>
-            <InputField 
-              inputType="number"
-              inputPlaceholder="Коэффициент изменения температуры поверхности"
-              inputValue={temperature}
-              handleInputChange={handleTemperatureChange}
-              isCheckboxChecked={isTemperatureCheckboxChecked}
-              handleCheckboxChange={handleTemperatureCheckboxChange}
-              handleKeyDown={handleKeyDown}
-            ></InputField>
+            <div className={styles.rowItem}>
+              <InputField
+                inputType="number"
+                inputPlaceholder="Средняя продолжительность жизни"
+                inputValue={avgLife}
+                handleInputChange={handleAvgLifeChange}
+                isCheckboxChecked={isAvgLifeCheckboxChecked}
+                handleCheckboxChange={handleAvgLifeCheckboxChange}
+                handleKeyDown={handleKeyDown}
+                ></InputField>
+            </div>
+            <div className={styles.rowItem}>
+              <InputField
+                inputType="number"
+                inputPlaceholder="Уровень безработицы"
+                inputValue={unemploymentRate}
+                handleInputChange={handleUnemploymentRateChange}
+                isCheckboxChecked={isUnemploymentRateCheckboxChecked}
+                handleCheckboxChange={handleUnemploymentRateCheckboxChange}
+                handleKeyDown={handleKeyDown}
+                ></InputField>
+            </div>
           </div>
-          
           <div>
-            <InputField 
-              inputType="number"
-              inputPlaceholder="ВВП"
-              inputValue={gdp}
-              handleInputChange={handleGdpChange}
-              isCheckboxChecked={isGdpCheckboxChecked}
-              handleCheckboxChange={handleGdpCheckboxChange}
-              handleKeyDown={handleKeyDown}
-              ></InputField>
+            <div className={styles.rowItem}>
+              <InputField
+                inputType="number"
+                inputPlaceholder="Коэффициент Джинни"
+                inputValue={ginnyCoef}
+                handleInputChange={handleGinnyCoefChange}
+                isCheckboxChecked={isGinnyCoefCheckboxChecked}
+                handleCheckboxChange={handleGinnyCoefCheckboxChange}
+                handleKeyDown={handleKeyDown}
+                ></InputField>
+            </div>
+            <div className={styles.rowItem}>
+              <InputField
+                inputType="number"
+                inputPlaceholder="Индекс ориентации правительства на сельское хозяйство"
+                inputValue={gaoi}
+                handleInputChange={handleGaoiChange}
+                isCheckboxChecked={isGaoiCheckboxChecked}
+                handleCheckboxChange={handleGaoiCheckboxChange}
+                handleKeyDown={handleKeyDown}
+                ></InputField>
+            </div>
           </div>
-          
-          <div>
-            <InputField 
-              inputType="number"
-              inputPlaceholder="Средняя продолжительность жизни"
-              inputValue={avgLife}
-              handleInputChange={handleAvgLifeChange}
-              isCheckboxChecked={isAvgLifeCheckboxChecked}
-              handleCheckboxChange={handleAvgLifeCheckboxChange}
-              handleKeyDown={handleKeyDown}
-              ></InputField>
-          </div>
-          
-          <div>
-            <InputField 
-              inputType="number"
-              inputPlaceholder="Уровень безработицы"
-              inputValue={unemploymentRate}
-              handleInputChange={handleUnemploymentRateChange}
-              isCheckboxChecked={isUnemploymentRateCheckboxChecked}
-              handleCheckboxChange={handleUnemploymentRateCheckboxChange}
-              handleKeyDown={handleKeyDown}
-              ></InputField>
-          </div>
-          
-          <div>
-            <InputField 
-              inputType="number"
-              inputPlaceholder="Коэффициент Джинни"
-              inputValue={ginnyCoef}
-              handleInputChange={handleGinnyCoefChange}
-              isCheckboxChecked={isGinnyCoefCheckboxChecked}
-              handleCheckboxChange={handleGinnyCoefCheckboxChange}
-              handleKeyDown={handleKeyDown}
-              ></InputField>
-          </div>
-          
-          <div>
-            <InputField 
-              inputType="number"
-              inputPlaceholder="Индекс ориентации правительства на сельское хозяйство"
-              inputValue={gaoi}
-              handleInputChange={handleGaoiChange}
-              isCheckboxChecked={isGaoiCheckboxChecked}
-              handleCheckboxChange={handleGaoiCheckboxChange}
-              handleKeyDown={handleKeyDown}
-              ></InputField>
-          </div>  
         </div>
-        <div>
-        </div>
-        <button type="button" onClick={handleSubmit}>Отправить</button>
+
+        <button
+            className={styles.button}
+            type="button"
+            onClick={handleSubmit}
+        >
+          Отправить
+        </button>
         {inputError.fieldsError && <div style={{color: 'red'}}>{inputError.fieldsError}</div>}
         {inputError.dotError && <div style={{color: 'red'}}>{inputError.dotError}</div>}
 

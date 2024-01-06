@@ -1,9 +1,14 @@
 .navbar {
     color: var(--text);
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
-    bottom: 0;
-    width: 130px;
+    /*bottom: 0;*/
+    /*width: 130px;*/
+    height: 100vh;
+    width: 10vw;
+    min-width: max-content;
+    max-width: 130px;
+    padding: 10px;
     background-color: #83e298;
 }
