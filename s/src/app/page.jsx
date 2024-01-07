@@ -8,32 +8,54 @@ import React, { useState } from 'react';
 import MyPlot from "@/components/plot/Plot";
 import InputField from "@/components/inputField/InputField";
 
-const Home = () => {
-  const [selectedOption, setSelectedOption] = useState(undefined);
-  const [options, setOptions] = useState([]);
-  
-  const [selectedYear, setSelectedYear] = useState(null);
-  
-  const [population, setPopulation] = useState('');
-  const [isPopulationCheckboxChecked, setIsPopulationCheckboxChecked] = useState(false);
-  
-  const [gaoi, setGaoi] = useState('');
-  const [isGaoiCheckboxChecked, setIsGaoiCheckboxChecked] = useState(false);
+const Home = () => {  
+  const [formData, setFormData] = useState({
+    product: {
+      selectedOption: undefined,
+      options: []
+    },
+    selectedYear: {
+      value: null,
+    },
 
-  const [temperature, setTemperature] = useState('');
-  const [isTemperatureCheckboxChecked, setIsTemperatureCheckboxChecked] = useState(false);
-  
-  const [gdp, setGdp] = useState('');
-  const [isGdpCheckboxChecked, setIsGdpCheckboxChecked] = useState(false);
-
-  const [avgLife, setAvgLife] = useState('');
-  const [isAvgLifeCheckboxChecked, setIsAvgLifeCheckboxChecked] = useState(false);
-
-  const [unemploymentRate, setUnemploymentRate] = useState('');
-  const [isUnemploymentRateCheckboxChecked, setIsUnemploymentRateCheckboxChecked] = useState(false);
-
-  const [ginnyCoef, setGinnyCoef] = useState('');
-  const [isGinnyCoefCheckboxChecked, setIsGinnyCoefCheckboxChecked] = useState(false);
+    fields: [
+      {
+        name: 'Численность населения',
+        value: '',
+        checkbox: false
+      },
+      {
+        name: 'Индекс ориентации правительства на сельское хозяйство',
+        value: '',
+        checkbox: false
+      },
+      {
+        name: 'ВВП',
+        value: '',
+        checkbox: false
+      },
+      {
+        name: 'Коэффициент изменения температуры поверхности',
+        value: '',
+        checkbox: false
+      },
+      {
+        name: 'Коэффициент Джинни',
+        value: '',
+        checkbox: false
+      },
+      {
+        name: 'Средняя продолжительность жизни',
+        value: '',
+        checkbox: false
+      },
+      {
+        name: 'Уровень безработицы',
+        value: '',
+        checkbox: false
+      },
+    ]
+  })
 
   const [plotExportDataX, setPlotExportDataX] = useState([]);
   const [plotExportDataY, setPlotExportDataY] = useState([]);
@@ -46,11 +68,20 @@ const Home = () => {
   
   const clearErrors = () => {
     setInputError({
-      fieldsError: '',
-      negativeError: '',
-      yearError: '',
-      productError: '',
-      dotError: ''
+      fieldsError: {
+        names: [],
+        message: ''
+      },
+      requiredProduct: '',
+      requiredYear: '',
+      lengthError: {
+        names: [],
+        message: ''
+      },
+      dotError: {
+        names: [],
+        message: ''
+      },
     });
   };
   
@@ -67,120 +98,91 @@ const Home = () => {
   };
 
   const [inputError, setInputError] = useState({
-    fieldsError: '',
-    negativeError: '',
-    yearError: '',
-    productError: '',
+    fieldsError: {
+      names: [],
+      message: ''
+    },
+    requiredProduct: '',
+    requiredYear: '',
+    lengthError: {
+      names: [],
+      message: ''
+    },
+    dotError: {
+      names: [],
+      message: ''
+    },
   });
 
-  const handlePopulationCheckboxChange = () => {
+  const handleFieldCheckboxChange = (fieldName) => {
     clearErrors()
-    setIsPopulationCheckboxChecked(!isPopulationCheckboxChecked);
-    setPopulation(''); 
+    const updatedFields = formData.fields.map(field => {
+      if (field.name === fieldName) {
+        return {
+          ...field,
+          checkbox: !field.checkbox,
+          value: ' '
+        };
+      }
+      return field;
+    });
+    setFormData(prevState => ({
+      ...prevState,
+      fields: updatedFields
+    }));
   };
 
-  const handlePopulationChange = (e) => {
+  const handleFieldValueChange = (fieldName, value) => {
     clearErrors()
-    if (isPopulationCheckboxChecked) {
-      setPopulation(e.target.value);
-      
-    }
-  };
-
-  const handleTemperatureCheckboxChange = () => {
-    clearErrors()
-    setIsTemperatureCheckboxChecked(!isTemperatureCheckboxChecked);
-    setTemperature(' '); 
-  };
-
-  const handleTemperatureChange = (e) => {
-    clearErrors()
-    if (isTemperatureCheckboxChecked) {
-      setTemperature(e.target.value);
-    }
-  };
-
-  const handleGdpCheckboxChange = () => {
-    clearErrors()
-    setIsGdpCheckboxChecked(!isGdpCheckboxChecked);
-    setGdp(' '); 
-  };
-
-  const handleGdpChange = (e) => {
-    clearErrors()
-    if (isGdpCheckboxChecked) {
-      setGdp(e.target.value);
-    }
-  };
-
-  const handleAvgLifeCheckboxChange = () => {
-    clearErrors()
-    setIsAvgLifeCheckboxChecked(!isAvgLifeCheckboxChecked);
-    setAvgLife(' '); 
-  };
-
-  const handleAvgLifeChange = (e) => {
-    clearErrors()
-    if (isAvgLifeCheckboxChecked) {
-      setAvgLife(e.target.value);
-    }
-  };
-
-  const handleUnemploymentRateCheckboxChange = () => {
-    clearErrors()
-    setIsUnemploymentRateCheckboxChecked(!isUnemploymentRateCheckboxChecked);
-    setUnemploymentRate(' '); 
-  };
-
-  const handleUnemploymentRateChange = (e) => {
-    clearErrors()
-    if (isUnemploymentRateCheckboxChecked) {
-      setUnemploymentRate(e.target.value);
-    }
-  };
-
-  const handleGinnyCoefCheckboxChange = () => {
-    clearErrors()
-    setIsGinnyCoefCheckboxChecked(!isGinnyCoefCheckboxChecked);
-    setGinnyCoef(' '); 
-  };
-
-  const handleGinnyCoefChange = (e) => {
-    clearErrors()
-    if (isGinnyCoefCheckboxChecked) {
-      setGinnyCoef(e.target.value);
-    }
-  };
-
-  const handleGaoiCheckboxChange = () => {
-    clearErrors()
-    setIsGaoiCheckboxChecked(!isGaoiCheckboxChecked);
-    setGaoi(' '); 
-  };
-
-  const handleGaoiChange = (e) => {
-    clearErrors()
-    if (isGaoiCheckboxChecked) {
-      setGaoi(e.target.value);
-    }
+    const updatedFields = formData.fields.map(field => {
+      if (field.name === fieldName && field.checkbox) {
+        return {
+          ...field,
+          value: value.target.value
+        };
+      }
+      return field;
+    });
+    setFormData(prevState => ({
+      ...prevState,
+      fields: updatedFields
+    }));
   };
 
   const handleDropDownClick = () => {
     clearErrors()
     axios.get("http://localhost:8080/api/predict-food-balance")
     .then(response => {
-      setOptions(response.data.products)
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        product: {
+          ...prevFormData.product,
+          options: response.data.products
+        }
+      }))
     })
   }
 
   const handleYearChange = (date) => {
     clearErrors()
-    setSelectedYear(date);
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      selectedYear: {
+        ...prevFormData.selectedYear,
+        value: date 
+      }
+    }));
   };
 
   const handleSelect = (option) => {
     clearErrors() 
-    setSelectedOption(option);
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      product: {
+        ...prevFormData.product,
+        selectedOption: option
+      }
+    }));
   };
 
   const handleResponse = (response) => {
@@ -218,55 +220,103 @@ const Home = () => {
 
     setPlotProductionDataX([...prodx])
     setPlotProductionDataY([...prody])
-
-    console.log(plotExportDataX)
   }
 
-  const handleSubmit = () => {
+  const handlePredictionResponse = (data, request, year) => {
+    request.data.push({...data.data, year: year})
+  }
+
+  const handleSubmit = async () => {
+    clearErrors()
     let errors = {};
-    if(isPopulationCheckboxChecked && population === ''
-      || isAvgLifeCheckboxChecked && avgLife === ''
-      || isGaoiCheckboxChecked && gaoi === ''
-      || isGdpCheckboxChecked && gdp === ''
-      || isGinnyCoefCheckboxChecked && ginnyCoef === ''
-      || isTemperatureCheckboxChecked && temperature === ''
-      || isUnemploymentRateCheckboxChecked && unemploymentRate === ''
-      ){
-      errors.fieldsError = 'Все выбранные параметры должны быть заполнены'
+    errors.lengthError = {names: [], message: ''};
+    errors.dotError = {names: [], message: ''};
+    errors.fieldsError = {names: [], message: ''};
+    for(let i = 0; i < formData.fields.length; ++i){
+      let value = formData.fields[i].value
+      console.log(formData.fields[i].name + ' ' + '!' + formData.fields[i].value + '!')
+      if(formData.fields[i].checkbox && (value === '' || value === ' ')){
+        console.log("!@#!@#!@#!@")
+        errors.fieldsError.names.push(formData.fields[i].name)
+        errors.fieldsError.message = 'Все выбранные параметры должны быть заполнены'
+      }
+
+      if(value.startsWith('.')){
+        errors.dotError.names.push(formData.fields[i].name)
+        errors.dotError.message = 'Число не может начинаться с "."'
+      }
+
+      if (value.includes('.')) {
+        const [beforeDot, afterDot] = value.split('.'); 
+        if (beforeDot.length > 10 || afterDot.length > 10) { 
+          errors.lengthError.names.push(formData.fields[i].name)
+          errors.lengthError.message = "Число до или после точки не должно превышать 10 знаков"
+        }
+      }
+
+      if(value.length > 10) {
+        errors.lengthError.names.push(formData.fields[i].name)
+        errors.lengthError.message = "Число до или после точки не должно превышать 10 знаков"
+      }
     }
 
-    if(selectedOption === undefined){
-      errors.productError = 'Продукт обязан быть выбран'
-    }
-    
-    if(selectedYear === null){
-      errors.yearError = 'Год обязан быть выбран'
+    if(formData.product.selectedOption === undefined) {
+      errors.requiredProduct = 'Обязательные поля должны быть заполнены'
     }
 
-    console.log(gaoi)
-    if (gaoi.startsWith('.') || temperature.startsWith('.') || gdp.startsWith('.') || avgLife.startsWith('.') || unemploymentRate.startsWith('.') || ginnyCoef.startsWith('.')) {
-      errors.dotError = 'Число не может начинаться с "."'
+    if(formData.selectedYear.value === null) {
+      errors.requiredYear = 'Обязательные поля должны быть заполнены'
+    }
+
+    if(errors.lengthError.message === ''){
+      delete errors.lengthError
+    }
+    if(errors.dotError.message === ''){
+      delete errors.dotError
+    }
+    if(errors.fieldsError.message === ''){
+      delete errors.fieldsError
     }
 
     if (Object.keys(errors).length > 0) {
       setInputError(errors);
+      console.log(inputError)
       return
     }
     
     let request = {
-      product: Number(selectedOption), 
+      product: Number(formData.product.selectedOption), 
       data: []
     }
   
+    for(let i = 2021; i < Number(formData.selectedYear.value.getFullYear()); ++i){
+      let response = await axios.post("http://localhost:8080/api/predict-input-data", {year: i})
+      handlePredictionResponse(response.data, request, i)
+    }
+
+    let predictedYearRespone = await axios.post("http://localhost:8080/api/predict-input-data", {year: Number(formData.selectedYear.value.getFullYear())})
+    
+    let population = formData.fields.find(field => field.name === 'Численность населения').value
+    let surface_temperature_change = formData.fields.find(field => field.name === 'Коэффициент изменения температуры поверхности').value
+    let life_expectancy = formData.fields.find(field => field.name === 'Средняя продолжительность жизни').value
+    let gini = formData.fields.find(field => field.name === 'Коэффициент Джинни').value 
+    let agriculture_orientation = formData.fields.find(field => field.name === 'Индекс ориентации правительства на сельское хозяйство').value
+    let unemployment = formData.fields.find(field => field.name === 'Уровень безработицы').value
+    let gdp = formData.fields.find(field => field.name === 'ВВП').value
+
     request.data.push(
       {
-        year: Number(selectedYear.getFullYear()), 
-        population: Number(population), 
-        electricity: Number(temperature)
+        year: Number(formData.selectedYear.value.getFullYear()), 
+        population: Number(population === '' || population === ' ' ? predictedYearRespone.data.data.population : population), 
+        surface_temperature_change: Number(surface_temperature_change === '' || surface_temperature_change === ' ' ? predictedYearRespone.data.data.surface_temperature_change : surface_temperature_change),
+        life_expectancy: Number(life_expectancy === '' || life_expectancy === ' ' ? predictedYearRespone.data.data.life_expectancy : life_expectancy),
+        gini: Number(gini === '' || gini === ' ' ? predictedYearRespone.data.data.gini : gini),
+        agriculture_orientation: Number(agriculture_orientation === '' || agriculture_orientation === ' ' ? predictedYearRespone.data.data.agriculture_orientation : agriculture_orientation),
+        unemployment: Number(unemployment === '' || unemployment ===' ' ? predictedYearRespone.data.data.unemployment : unemployment),
+        gdp: Number(gdp === '' || gdp === ' ' ? predictedYearRespone.data.data.gdp : gdp),
       }
     )
 
-    console.log(request)
     axios.post("http://localhost:8080/api/predict-food-balance", 
     request)
     .then(response => {
@@ -276,122 +326,72 @@ const Home = () => {
 
   return (
     <div className="content-container">
-      Главная страница
-      <form>
-        <div>
-          <select value={selectedOption} onFocus={() => handleDropDownClick()} onChange={(e) => handleSelect(e.target.value)}>
-            <option value={undefined} disabled selected hidden>Выберите продукт</option>
-            {options.map((option) => (
+      <label className={styles.mainText}>Главная страница</label>
+      <form className={styles.firstRow}>
+        <div className={styles.mainSelect}>
+          <label className={styles.secondaryText}><span title="Обязательное поле" className="red-star">*<style jsx>{`
+            .red-star {
+               color: red;
+               font-size: 20px;
+               vertical-align: middle;
+             }
+          `}</style></span>Выберите продукт:</label>
+          <select className={styles["rounded-select"]} style={{ borderColor: inputError.requiredProduct === '' || inputError.requiredProduct === undefined ? '#aaa' : 'red'}} value={formData.product.selectedOption} onClick={() => handleDropDownClick()} onChange={(e) => handleSelect(e.target.value)}>
+            <option value={undefined} disabled selected hidden>Не выбрано</option>
+            {formData.product.options.map((option) => (
               <option value={option.product_id} key={option.product_id}>{option.product_name}</option>
             ))}
           </select>
-          {inputError.productError && <div style={{color: 'red'}}>{inputError.productError}</div>}
         </div>
-        <div>
-          <label>Выберите год:</label>
+        <div className={styles.mainSelect}>
+          <label className={styles.secondaryText}><span title="Обязательное поле" className="red-star">*<style jsx>{`
+            .red-star {
+               color: red;
+               font-size: 20px;
+               vertical-align: middle;
+             }
+          `}</style></span>Выберите год:</label>
           <DatePicker
-            selected={selectedYear}
+            className={styles[inputError.requiredYear === '' || inputError.requiredYear === undefined ? "rounded-datePeeker" : "rounded-datePeeker-red"]}
+            selected={formData.selectedYear.value}
             onChange={handleYearChange}
             showYearPicker
             dateFormat="yyyy"
           />
-          {inputError.yearError && <div style={{color: 'red'}}>{inputError.yearError}</div>}
         </div>
         <div className={styles.form}>
-          <div>
+          {formData.fields.map((field) => (
             <InputField
-              inputType="number"
-              inputPlaceholder="Численность населения"
-              inputValue={population}
-              handleInputChange={handlePopulationChange}
-              isCheckboxChecked={isPopulationCheckboxChecked}
-              handleCheckboxChange={handlePopulationCheckboxChange}
-              handleKeyDown={handleRationalKeyDown}
-              ></InputField>
-          </div>
-          <div>
-            <InputField 
-              inputType="number"
-              inputPlaceholder="Коэффициент изменения температуры поверхности"
-              inputValue={temperature}
-              handleInputChange={handleTemperatureChange}
-              isCheckboxChecked={isTemperatureCheckboxChecked}
-              handleCheckboxChange={handleTemperatureCheckboxChange}
-              handleKeyDown={handleKeyDown}
+            inputType="number"
+            inputPlaceholder={field.name}
+            isError = {inputError.lengthError !== undefined && inputError.lengthError.names.includes(field.name)
+             || inputError.dotError !== undefined && inputError.dotError.names.includes(field.name)
+             || inputError.fieldsError !== undefined && inputError.fieldsError.names.includes(field.name)}
+            inputValue={field.value}
+            handleInputChange={(value) => handleFieldValueChange(field.name, value)}
+            isCheckboxChecked={field.checkbox}
+            handleCheckboxChange={() => handleFieldCheckboxChange(field.name)}
+            handleKeyDown={field.name !== 'Численность населения' ? handleKeyDown : handleRationalKeyDown}
             ></InputField>
-          </div>
-          
-          <div>
-            <InputField 
-              inputType="number"
-              inputPlaceholder="ВВП"
-              inputValue={gdp}
-              handleInputChange={handleGdpChange}
-              isCheckboxChecked={isGdpCheckboxChecked}
-              handleCheckboxChange={handleGdpCheckboxChange}
-              handleKeyDown={handleKeyDown}
-              ></InputField>
-          </div>
-          
-          <div>
-            <InputField 
-              inputType="number"
-              inputPlaceholder="Средняя продолжительность жизни"
-              inputValue={avgLife}
-              handleInputChange={handleAvgLifeChange}
-              isCheckboxChecked={isAvgLifeCheckboxChecked}
-              handleCheckboxChange={handleAvgLifeCheckboxChange}
-              handleKeyDown={handleKeyDown}
-              ></InputField>
-          </div>
-          
-          <div>
-            <InputField 
-              inputType="number"
-              inputPlaceholder="Уровень безработицы"
-              inputValue={unemploymentRate}
-              handleInputChange={handleUnemploymentRateChange}
-              isCheckboxChecked={isUnemploymentRateCheckboxChecked}
-              handleCheckboxChange={handleUnemploymentRateCheckboxChange}
-              handleKeyDown={handleKeyDown}
-              ></InputField>
-          </div>
-          
-          <div>
-            <InputField 
-              inputType="number"
-              inputPlaceholder="Коэффициент Джинни"
-              inputValue={ginnyCoef}
-              handleInputChange={handleGinnyCoefChange}
-              isCheckboxChecked={isGinnyCoefCheckboxChecked}
-              handleCheckboxChange={handleGinnyCoefCheckboxChange}
-              handleKeyDown={handleKeyDown}
-              ></InputField>
-          </div>
-          
-          <div>
-            <InputField 
-              inputType="number"
-              inputPlaceholder="Индекс ориентации правительства на сельское хозяйство"
-              inputValue={gaoi}
-              handleInputChange={handleGaoiChange}
-              isCheckboxChecked={isGaoiCheckboxChecked}
-              handleCheckboxChange={handleGaoiCheckboxChange}
-              handleKeyDown={handleKeyDown}
-              ></InputField>
-          </div>  
+          ))}
         </div>
+        <button
+            className={styles.button}
+            type="button"
+            onClick={handleSubmit}
+        >
+          Отправить
+        </button>
+        {}
+        {(inputError.requiredProduct || inputError.requiredYear) && <div style={{color: 'red'}}>Обязательные поля должны бать заполнены</div>}
+        {inputError.lengthError && <div style={{color: 'red'}}>{inputError.lengthError.message}</div>}
+        {inputError.fieldsError && <div style={{color: 'red'}}>{inputError.fieldsError.message}</div>}
+        {inputError.dotError && <div style={{color: 'red'}}>{inputError.dotError.message}</div>}
         <div>
-        </div>
-        <button type="button" onClick={handleSubmit}>Отправить</button>
-        {inputError.fieldsError && <div style={{color: 'red'}}>{inputError.fieldsError}</div>}
-        {inputError.dotError && <div style={{color: 'red'}}>{inputError.dotError}</div>}
-
-        <div>
-          <MyPlot plotDataX={plotExportDataX}  plotDataY={plotExportDataY} plotTitle={"Экспорт"} plotXaxis={"Экспорт"} plotYaxis={"Год"} ></MyPlot>
-          <MyPlot plotDataX={plotImportDataX}  plotDataY={plotImportDataY} plotTitle={"Импорт"} plotXaxis={"Импорт"} plotYaxis={"Год"} ></MyPlot>
-          <MyPlot plotDataX={plotFoodDataX}  plotDataY={plotFoodDataY} plotTitle={"Потребление"} plotXaxis={"Потребление"} plotYaxis={"Год"} ></MyPlot>
-          <MyPlot plotDataX={plotProductionDataX}  plotDataY={plotProductionDataY} plotTitle={"Производство"} plotXaxis={"Производство"} plotYaxis={"Год"} ></MyPlot>
+          <MyPlot plotDataX={plotExportDataX}  plotDataY={plotExportDataY} plotTitle={"Экспорт"} plotXaxis={"Экспорт, в тыс. тонн"} plotYaxis={"Год"} ></MyPlot>
+          <MyPlot plotDataX={plotImportDataX}  plotDataY={plotImportDataY} plotTitle={"Импорт"} plotXaxis={"Импорт, в тыс. тонн"} plotYaxis={"Год"} ></MyPlot>
+          <MyPlot plotDataX={plotFoodDataX}  plotDataY={plotFoodDataY} plotTitle={"Потребление"} plotXaxis={"Потребление, в тыс. тонн"} plotYaxis={"Год"} ></MyPlot>
+          <MyPlot plotDataX={plotProductionDataX}  plotDataY={plotProductionDataY} plotTitle={"Производство"} plotXaxis={"Производство, в тыс. тонн"} plotYaxis={"Год"} ></MyPlot>
         </div>
       </form>
     </div>

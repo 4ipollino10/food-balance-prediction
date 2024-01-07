@@ -5,12 +5,8 @@ const Links = () => {
     
   const links = [
 		{
-			title: 'Home Page',
+			title: 'Главная страница',
 			path: '/',
-		},
-		{
-			title: 'Some Page',
-			path: '/somePage',
 		},
 	];
     
