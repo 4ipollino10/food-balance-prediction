@@ -10,7 +10,9 @@ const MyPlot = ({ plotDataX, plotDataY, plotTitle, plotXaxis, plotYaxis }) => {
     },
     yaxis: {
       title: plotXaxis
-    }
+    },
+    height: 700,
+    width: 1500
   };
 
   return <Plot
