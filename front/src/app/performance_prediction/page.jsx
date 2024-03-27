@@ -445,7 +445,7 @@ const PerformancePrediction = () => {
       {
         plotGDPDataX.length !== 0 ? 
           <div className={styles.plot}>
-            <MyPlot plotDataX={plotGDPDataX}  plotDataY={plotGDPDataY} plotTitle={"ВВП"} plotXaxis={"Руб."} plotYaxis={"Год"}></MyPlot>
+            <MyPlot plotDataX={plotGDPDataX}  plotDataY={plotGDPDataY} plotTitle={"ВВП"} plotXaxis={"USD"} plotYaxis={"Год"}></MyPlot>
           </div> 
         : null
       }
