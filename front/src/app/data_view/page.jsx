@@ -14,7 +14,8 @@ const inter = Anonymous_Pro(
 )
 
 const DataView = () => {  
-
+  const [isRequestLoading, setIsRequestLoading] = useState(false);
+  const [isExportLoading, setIsExportLoading] = useState(false);
   const [tableData, setTableData] = useState([])
 
   const [formData, setFormData] = useState({
@@ -67,9 +68,9 @@ const DataView = () => {
     setTableData(response.data)
   }
 
-  const handleTableRequest = () => {
+  const handleTableRequest = async () => {
+    setIsRequestLoading(true)
     let errors = {}
-
     if(formData.product.selectedOption === undefined) {
       errors.requiredTable = 'Обязательные параметры должны быть заполнены'
     }
@@ -77,7 +78,7 @@ const DataView = () => {
     if (Object.keys(errors).length > 0) {
       errors.isError = true;
       setInputError(errors);
-
+      setIsRequestLoading(false)
       return
     }
 
@@ -87,6 +88,8 @@ const DataView = () => {
     }).then(response => {
       handleTableResponse(response.data)
     })
+
+    setIsRequestLoading(false)
   }
 
   const createHeaders = () => {
@@ -138,6 +141,7 @@ const DataView = () => {
   }
 
   const handleExportToCsv = async () => {
+    setIsExportLoading(true)
     let errors = {}
     if(tableData.length === 0){
       errors.emptyData = 'Перед выгрузкой нужно сделать запрос'
@@ -146,7 +150,7 @@ const DataView = () => {
     if (Object.keys(errors).length > 0) {
       errors.isError = true;
       setInputError(errors);
-
+      setIsExportLoading(false)
       return
     }
 
@@ -158,6 +162,7 @@ const DataView = () => {
     .then(response => {
       downloadCSV(response.data, "Выгрузка")
     })
+    setIsExportLoading(false)
   }
 
   return (
@@ -198,7 +203,11 @@ const DataView = () => {
                 type="button"
                 onClick={handleTableRequest}
                 >
-                Отправить<br/> запрос
+                {isRequestLoading ? (
+                <div className={styles.loader}></div>
+            ) : (
+                'Отправить\n запрос'
+            )}
               </button>
               <button
                 className={styles.exportButton}
@@ -206,7 +215,11 @@ const DataView = () => {
                 type="button"
                 onClick={handleExportToCsv}
                 >
-                Экспорт<br/> данных
+                {isExportLoading ? (
+                <div className={styles.loader}></div>
+            ) : (
+                'Экспорт\n данных'
+            )}
               </button>
           </div>
           <div className={styles.infoBlock}>

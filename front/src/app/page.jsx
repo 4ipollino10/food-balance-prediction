@@ -3,14 +3,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "./homepage.module.css"
 import axios from "axios";
-
 import React, { useState } from 'react';
 import MyPlot from "@/components/plot/Plot";
 import InputField from "@/components/inputField/InputField";
-
-import { Tooltip } from "@nextui-org/react";
-
-import { MdHelpOutline } from 'react-icons/md';
 import Stripe from "@/components/stripe/Stripe";
 import InfoCard from "@/components/infoCard/InfoCard";
 import ErrorCard from "@/components/errorCard/ErrorCard";
@@ -24,7 +19,9 @@ const inter = Anonymous_Pro(
 )
 
 
-const Home = () => {      
+const Home = () => {  
+  const [isRequestLoading, setIsRequestLoading] = useState(false);    
+  const [isExportLoading, setIsExportLoading] = useState(false);
   const [formData, setFormData] = useState({
     product: {
       selectedOption: undefined,
@@ -264,13 +261,15 @@ const Home = () => {
   }
 
   const handleSubmit = async () => {
+    setIsRequestLoading(true);
     clearErrors()
     let errors = {};
+
     errors.lengthError = {names: [], message: ''};
     errors.startDotError = {names: [], message: ''};
-    errors.endDotError = {names: [], message: ''};
     errors.zeroError = {names: [], message: ''};
     errors.fieldsError = {names: [], message: ''};
+
     for(let i = 0; i < formData.fields.length; ++i){
       let value = formData.fields[i].value
       if(formData.fields[i].checkbox && (value === '' || value === ' ')){
@@ -281,11 +280,6 @@ const Home = () => {
       if(value.startsWith('.')){
         errors.startDotError.names.push(formData.fields[i].name)
         errors.startDotError.message = 'Число не может начинаться с "."'
-      }
-
-      if(value.endsWith('.')){
-        errors.endDotError.names.push(formData.fields[i].name)
-        errors.endDotError.message = 'Число не может заканчиваться на "."'
       }
 
       if(value.startsWith('0') && value.indexOf('.') === -1){
@@ -321,9 +315,6 @@ const Home = () => {
     if(errors.startDotError.message === ''){
       delete errors.startDotError
     }
-    if(errors.endDotError.message === ''){
-      delete errors.endDotError
-    }
     if(errors.zeroError.message === ''){
       delete errors.zeroError
     }
@@ -334,7 +325,7 @@ const Home = () => {
     if (Object.keys(errors).length > 0) {
       errors.isError = true;
       setInputError(errors);
-
+      setIsRequestLoading(false);
       return
     }
     
@@ -378,12 +369,13 @@ const Home = () => {
       }
     )
 
-
     axios.post("http://localhost:8080/predict-food-balance", 
     request)
     .then(response => {
       handleResponse(response.data)
     })
+
+    setIsRequestLoading(false);
   };
 
   const [infoDataCard, setInfoDataCard] = useState({
@@ -429,6 +421,7 @@ const Home = () => {
   }
 
   const handleExportToCsv = async () => {
+    setIsExportLoading(true)
     let errors = {}
     if(plotExportDataX.length === 0){
       errors.emptyData = 'Перед выгрузкой нужно сделать запрос'
@@ -437,7 +430,7 @@ const Home = () => {
     if (Object.keys(errors).length > 0) {
       errors.isError = true;
       setInputError(errors);
-
+      setIsExportLoading(false)
       return
     }
 
@@ -486,7 +479,7 @@ const Home = () => {
     .then(response => {
       downloadCSV(response.data, "Выгрузка")
     })
-
+    setIsExportLoading(false)
   }
 
   return (
@@ -530,6 +523,7 @@ const Home = () => {
                 className={styles[inputError.requiredYear === '' || inputError.requiredYear === undefined ? "rounded-datePeeker" : "rounded-datePeeker-red"]}
                 selected={formData.selectedYear.value}
                 onChange={handleYearChange}
+                maxDate={new Date(new Date().getFullYear() + 100, 11, 31)}
                 showYearPicker
                 dateFormat="yyyy"
                 />
@@ -565,7 +559,7 @@ const Home = () => {
         </form>
         <div className={styles.infoBlock}>
           {infoDataCard.isPressed ? <InfoCard title={infoDataCard.title} text={infoDataCard.text}/> : null}
-          {inputError.isError ? <ErrorCard inputError={inputError}/> : null}
+          {inputError.isError ? <ErrorCard inputError={inputError}/> : null}      
         </div>
       </div>
       <div className={styles.buttonContainer}>
@@ -575,7 +569,11 @@ const Home = () => {
           type="button"
           onClick={handleSubmit}
       >
-        Отправить<br/> запрос
+        {isRequestLoading ? (
+                <div className={styles.loader}></div>
+            ) : (
+                'Отправить\n запрос'
+            )}
       </button>
       <button
           className={styles.exportButton}
@@ -583,16 +581,12 @@ const Home = () => {
           type="button"
           onClick={handleExportToCsv}
       >
-        Экспорт<br/> данных
+        {isExportLoading ? (
+                <div className={styles.loader}></div>
+            ) : (
+                'Экспорт\n данных'
+            )}
       </button>
-      {/* <div>
-      <input type="file" onChange={handleFileChange} />
-      <button 
-          className={styles.exportButton}
-          style={inter.style}
-          type="button" 
-          onClick={handleUpload}>Импорт данных</button>
-      </div> */}
       </div>
       {plotExportDataX.length !== 0 ? <div className={styles.plot}>
           <MyPlot plotDataX={plotExportDataX}  plotDataY={plotExportDataY} plotTitle={"Экспорт"} plotXaxis={"Экспорт, в тыс. тонн"} plotYaxis={"Год"} ></MyPlot>

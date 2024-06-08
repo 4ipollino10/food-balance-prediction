@@ -25,6 +25,8 @@ const inter = Anonymous_Pro(
 )
 
 const PerformancePrediction = () => {  
+  const [isRequestLoading, setIsRequestLoading] = useState(false);
+  const [isExportLoading, setIsExportLoading] = useState(false);
 
   const [plotAOIDataX, setPlotAOIDataX] = useState([]);
   const [plotAOIDataY, setPlotAOIDataY] = useState([]);
@@ -183,6 +185,7 @@ const PerformancePrediction = () => {
   }
 
   const handleExportToCsv = async () => {
+    setIsExportLoading(true)
     let errors = {}
     if(plotPopulationDataX.length === 0 &&
       plotAOIDataX.length === 0 &&
@@ -197,7 +200,7 @@ const PerformancePrediction = () => {
     if (Object.keys(errors).length > 0) {
       errors.isError = true;
       setInputError(errors);
-
+      setIsExportLoading(false)
       return
     }
 
@@ -209,6 +212,8 @@ const PerformancePrediction = () => {
     .then(response => {
       downloadCSV(response.data, "Выгрузка")
     })
+
+    setIsExportLoading(false)
   }
 
   const handlePredictionResponse = (data, request, year) => {
@@ -291,6 +296,7 @@ const PerformancePrediction = () => {
   }
 
   const handleSubmit = async () => {
+    setIsRequestLoading(true)
     clearErrors()
     let errors = {};
     let isNotCheckboxError = false
@@ -309,6 +315,7 @@ const PerformancePrediction = () => {
     if (Object.keys(errors).length > 0) {
       errors.isError = true;
       setInputError(errors);
+      setIsRequestLoading(false)
       return
     }
 
@@ -349,6 +356,7 @@ const PerformancePrediction = () => {
     .then(response => {
       handleGraphResponse(response.data)
     })
+    setIsRequestLoading(false)
   };
 
   return (
@@ -380,7 +388,7 @@ const PerformancePrediction = () => {
             </div>
           </div>
           <label className={styles.subText} style={inter.style}>
-            Дополнительные параметры для запроса
+            Параметры для запроса
           </label>
           <div className={inputError.checkedError === '' || inputError.checkedError === undefined ? styles.container : styles.containerError}>
             <div className={styles.form}>
@@ -395,7 +403,7 @@ const PerformancePrediction = () => {
             </div>
           </div>  
         </form>
-        <div style={{flexDirection: 'column', width: '600px', marginLeft: '100px', marginTop: '20px'}}>
+        <div style={{flexDirection: 'column', width: '600px', marginLeft: '100px', marginTop: '160px'}}>
           <label className={styles.predSubText} style={inter.style}>Полученные данные, после предсказания</label>
           <div className={styles.responseContainer} style={inter.style}>
             <div className={predictionFileds.peopleCount !== '' ? styles.responseFieldSet : styles.responseField}>{predictionFileds.peopleCount !== '' && formData.fields[0].checkbox ? predictionFileds.peopleCount : 'Численность населения'}</div>
@@ -406,7 +414,6 @@ const PerformancePrediction = () => {
             <div className={predictionFileds.Life !== '' ? styles.responseFieldSet : styles.responseField}>{predictionFileds.Life !== '' && formData.fields[5].checkbox ? predictionFileds.Life : 'Средняя продолжительность жизни'}</div>
             <div className={predictionFileds.Work !== '' ? styles.responseFieldSet : styles.responseField}>{predictionFileds.Work !== '' && formData.fields[6].checkbox ? predictionFileds.Work : 'Уровень безработицы'}</div>
           </div>
-          {inputError.isError ? <ErrorCard inputError={inputError}/> : null}
         </div>
       </div>
 
@@ -416,21 +423,32 @@ const PerformancePrediction = () => {
           style={inter.style}
           type="button"
           onClick={handleSubmit}
-      >
-        Отправить<br/> запрос
+          >
+        {isRequestLoading ? (
+          <div className={styles.loader}></div>
+        ) : (
+          'Отправить\n запрос'
+        )}
       </button>
       <button
           className={styles.exportButton}
           style={inter.style}
           type="button"
           onClick={handleExportToCsv}
-      >
-        Экспорт<br/> данных
+          >
+        {isExportLoading ? (
+          <div className={styles.loader}></div>
+        ) : (
+          'Экспорт\n данных'
+        )}
       </button>
+      <div style={{paddingLeft: "220px"}}>
+        {inputError.isError ? <ErrorCard inputError={inputError}/> : null}
+      </div>
       </div>
       {
         plotPopulationDataX.length !== 0 ? 
-          <div className={styles.plot}>
+        <div className={styles.plot}>
             <MyPlot plotDataX={plotPopulationDataX}  plotDataY={plotPopulationDataY} plotTitle={"Численность населения"} plotXaxis={"Человек"} plotYaxis={"Год"}></MyPlot>
           </div> 
         : null
